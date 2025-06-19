@@ -1,62 +1,72 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Registration Assignment</title>
-    <link rel="stylesheet" href="index.css" />
-  </head>
-  <body>
-    <div class="form-container">
-      <h1>User Registration</h1>
-      <form id="userForm">
-        <label>
-          Name:
-          <input type="text" id="name" required />
-        </label>
-        <label>
-          Email:
-          <input type="email" id="email" required />
-        </label>
-        <label>
-          Password:
-          <input type="password" id="password" required />
-        </label>
-        <label>
-          DOB:
-          <input
-            type="date"
-            id="dob"
-            required
-            min="1967-11-09"
-            max="2025-06-19"
-          />
-        </label>
-        <label class="checkbox">
-          <input type="checkbox" id="terms" required />
-          I accept the Terms & Conditions
-        </label>
-        <button type="submit" id="submitBtn">Submit</button>
-      </form>
-    </div>
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  background-color: #f8f9fa;
+}
+.form-container,
+.table-container {
+  background: white;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 5px;
+  width: 360px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="date"] {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+button {
+  padding: 10px;
+  background: #28a745;
+  border: none;
+  color: white;
+  cursor: pointer;
+  border-radius: 4px;
+}
+button:hover {
+  background: #218838;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+th,
+td {
+  border: 1px solid #dee2e6;
+  padding: 8px;
+  text-align: left;
+}
+thead {
+  background: #007bff;
+  color: white;
+}
 
-    <div class="table-container">
-      <h2>Submitted Users</h2>
-      <table id="userTable">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Password</th>
-            <th>Dob</th>
-            <th>Accepted terms?</th>
-          </tr>
-        </thead>
-        <tbody id="userTableBody">
-          <!-- Entries will populate here -->
-        </tbody>
-      </table>
-    </div>
+.form-container,
+.table-container {
+  width: 800px;
+  max-width: 95%;
+}
 
-    <script src="index.js"></script>
-  </body>
-</html>
+table#userTable {
+  width: 100%;
+  table-layout: auto;
+  border-collapse: collapse;
+}
