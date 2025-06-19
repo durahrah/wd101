@@ -1,88 +1,70 @@
-// 1. Retrieve stored entries or return an empty array
-const retrieveEntries = () => {
-  const entries = localStorage.getItem("user‑entries");
-  return entries ? JSON.parse(entries) : [];
-};
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("userForm");
+  const table = document.getElementById("userTable");
+  const tbody = document.getElementById("userTableBody");
 
-// 2. Render the table using map() and template strings
-const displayEntries = () => {
-  const entries = retrieveEntries();
+  function calculateAge(dob) {
+    const today = new Date();
+    let age = today.getFullYear() - dob.getFullYear();
+    const m = today.getMonth() - dob.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) age--;
+    return age;
+  }
 
-  const tableEntries = entries
-    .map((entry) => {
-      const accepted = entry.terms ? "Yes" : "No";
-      return `
-        <tr>
-          <td class="border px-4 py-2">${entry.name}</td>
-          <td class="border px-4 py-2">${entry.email}</td>
-          <td class="border px-4 py-2">${entry.password}</td>
-          <td class="border px-4 py-2">${entry.dob}</td>
-          <td class="border px-4 py-2">${accepted}</td>
-        </tr>`;
-    })
-    .join("");
+  function validateEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  }
 
-  const table = `
-    <table class="table-auto w-full border-collapse">
-      <thead>
-        <tr>
-          <th class="px-4 py-2">Name</th>
-          <th class="px-4 py-2">Email</th>
-          <th class="px-4 py-2">Password</th>
-          <th class="px-4 py-2">Dob</th>
-          <th class="px-4 py-2">accepted terms?</th>
-        </tr>
-      </thead>
-      <tbody>
-        ${tableEntries}
-      </tbody>
-    </table>`;
+  function renderTable() {
+    const users = JSON.parse(localStorage.getItem("users") || "[]");
+    tbody.innerHTML = "";
 
-  document.getElementById("user‑entries").innerHTML = table;
-};
+    users.map((user) => {
+      const row = tbody.insertRow();
+      [
+        user.name,
+        user.email,
+        user.password,
+        user.dob,
+        user.terms ? "Yes" : "No",
+      ].map((value) => {
+        const cell = row.insertCell();
+        cell.textContent = value;
+      });
+    });
+  }
 
-// 3. Set up form submit handler
-document.getElementById("userForm").addEventListener("submit", (e) => {
-  e.preventDefault();
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const name = document.getElementById("name").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const pwd = document.getElementById("password").value;
+    const dobValue = document.getElementById("dob").value;
+    const terms = document.getElementById("terms").checked;
 
-  const name = document.getElementById("name").value.trim();
-  const email = document.getElementById("email").value.trim();
-  const password = document.getElementById("password").value;
-  const dob = document.getElementById("dob").value;
-  const terms = document.getElementById("terms").checked;
+    if (!name) return alert("Name required");
+    if (!email) return alert("Email required");
+    if (!validateEmail(email)) return alert("Invalid email format");
+    if (!pwd) return alert("Password required");
+    if (!dobValue) return alert("DOB required");
 
-  // Basic validation
-  if (!name) return alert("Name is required");
-  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
-    return alert("Valid email is required");
-  if (!password) return alert("Password is required");
-  if (!dob) return alert("DOB is required");
-  if (!terms) return alert("You must accept the terms");
+    const dob = new Date(dobValue);
+    if (dob < new Date("1967-11-09") || dob > new Date("2025-06-19"))
+      return alert("DOB must be between Nov 9, 1967 and Jun 19, 2025");
 
-  // Check DOB range
-  const dobDate = new Date(dob);
-  const min = new Date("1967-11-09");
-  const max = new Date("2025-06-19");
-  if (dobDate < min || dobDate > max)
-    return alert("DOB must be between Nov 9, 1967 and Jun 19, 2025");
+    const age = calculateAge(dob);
+    if (age < 18 || age > 55) return alert(`Age ${age}—must be 18‑55`);
 
-  // Age validation
-  const today = new Date();
-  let age = today.getFullYear() - dobDate.getFullYear();
-  const m = today.getMonth() - dobDate.getMonth();
-  if (m < 0 || (m === 0 && today.getDate() < dobDate.getDate())) age--;
-  if (age < 18 || age > 55)
-    return alert(`Age must be between 18 and 55 (your age: ${age})`);
+    if (!terms) return alert("Accept the Terms & Conditions");
 
-  // Store the entry
-  const entries = retrieveEntries();
-  entries.push({ name, email, password, dob, terms });
-  localStorage.setItem("user‑entries", JSON.stringify(entries));
+    const users = JSON.parse(localStorage.getItem("users") || "[]");
+    users.push({ name, email, password: pwd, dob: dobValue, terms });
+    localStorage.setItem("users", JSON.stringify(users));
 
-  // Re-render and reset form
-  displayEntries();
-  e.target.reset();
+    renderTable();
+    form.reset();
+  });
+
+  renderTable();
 });
 
-// 4. Initial table render on page load
-displayEntries();
