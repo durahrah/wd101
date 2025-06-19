@@ -1,71 +1,80 @@
-document.addEventListener('DOMContentLoaded', () => {
-  const form = document.getElementById('userForm');
-  const tableBody = document.getElementById('userTableBody');
+// -- Utility: safely get entries array
+function getEntries() {
+  const stored = localStorage.getItem('myapp_userEntries');
+  return stored ? JSON.parse(stored) : [];
+}
 
-  function calculateAge(dob) {
-    const today = new Date();
-    let age = today.getFullYear() - dob.getFullYear();
-    const m = today.getMonth() - dob.getMonth();
-    if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
-      age--;
-    }
-    return age;
-  }
+// -- Utility: save entries array
+function saveEntries(entries) {
+  localStorage.setItem('myapp_userEntries', JSON.stringify(entries));
+}
 
-  function validateEmail(email) {
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return re.test(email);
-  }
+// -- Validate email
+function isValidEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
 
-  function renderTable() {
-    const users = JSON.parse(localStorage.getItem('users') || '[]');
-    tableBody.innerHTML = '';
+// -- Calculate age based on DOB
+function calculateAge(dob) {
+  const diffMs = Date.now() - dob.getTime();
+  const ageDt = new Date(diffMs);
+  return Math.abs(ageDt.getUTCFullYear() - 1970);
+}
 
-    users.forEach(user => {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td>${user.name}</td>
-        <td>${user.email}</td>
-        <td>${user.password}</td>
-        <td>${user.dob}</td>
-        <td>${user.terms ? 'Yes' : 'No'}</td>
-      `;
-      tableBody.appendChild(tr);
-    });
-  }
+// -- Render table from stored entries
+function renderTable() {
+  const entries = getEntries();
+  const tbody = document.getElementById('userTableBody');
+  tbody.innerHTML = ''; // clear old rows
 
-  form.addEventListener('submit', e => {
+  entries.forEach(entry => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${entry.name}</td>
+      <td>${entry.email}</td>
+      <td>${entry.password}</td>
+      <td>${entry.dob}</td>
+      <td>${entry.terms ? 'Yes' : 'No'}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+// -- Form submission handler
+function setupForm() {
+  document.getElementById('userForm').addEventListener('submit', e => {
     e.preventDefault();
 
-    const name = document.getElementById('name').value.trim();
-    const email = document.getElementById('email').value.trim();
-    const password = document.getElementById('password').value;
-    const dobValue = document.getElementById('dob').value;
-    const terms = document.getElementById('terms').checked;
+    const form = e.target;
+    const name = form.name.value.trim();
+    const email = form.email.value.trim();
+    const password = form.password.value;
+    const dobVal = form.dob.value;
+    const terms = form.terms.checked;
 
+    // 🛡️ Validations
     if (!name) return alert('Name is required');
-    if (!email) return alert('Email is required');
-    if (!validateEmail(email)) return alert('Invalid email format');
+    if (!isValidEmail(email)) return alert('Valid email is required');
     if (!password) return alert('Password is required');
-    if (!dobValue) return alert('DOB is required');
-
-    const dob = new Date(dobValue);
-    const min = new Date('1967-11-09');
-    const max = new Date('2025-06-19');
-    if (dob < min || dob > max) return alert('DOB must be in the allowed range');
-
-    const age = calculateAge(dob);
-    if (age < 18 || age > 55) return alert('Age must be between 18 and 55');
-
+    if (!dobVal) return alert('Date of birth is required');
     if (!terms) return alert('You must accept the terms');
 
-    const users = JSON.parse(localStorage.getItem('users') || '[]');
-    users.push({ name, email, password, dob: dobValue, terms });
-    localStorage.setItem('users', JSON.stringify(users));
+    const dob = new Date(dobVal);
+    const age = calculateAge(dob);
+    if (age < 18 || age > 55) return alert(`Age must be 18–55 (you are ${age})`);
 
+    // ✅ Save
+    const entries = getEntries();
+    entries.push({ name, email, password, dob: dobVal, terms });
+    saveEntries(entries);
+
+    // 🖥️ Refresh table and reset form
     renderTable();
     form.reset();
   });
+}
 
+// -- Initialization on page load
+document.addEventListener('DOMContentLoaded', () => {
+  setupForm();
   renderTable();
 });
