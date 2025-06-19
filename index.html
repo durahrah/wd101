@@ -2,45 +2,62 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Registration Form</title>
+    <title>Registration Assignment</title>
     <link rel="stylesheet" href="index.css" />
   </head>
   <body>
-    <div class="container">
+    <div class="form-container">
       <h1>User Registration</h1>
       <form id="userForm">
-        <label>Name:<input type="text" id="name" required /></label>
-        <label>Email:<input type="email" id="email" required /></label>
-        <label>Password:<input type="password" id="password" required /></label>
-        <label
-          >DOB:<input
+        <label>
+          Name:
+          <input type="text" id="name" required />
+        </label>
+        <label>
+          Email:
+          <input type="email" id="email" required />
+        </label>
+        <label>
+          Password:
+          <input type="password" id="password" required />
+        </label>
+        <label>
+          DOB:
+          <input
             type="date"
             id="dob"
             required
             min="1967-11-09"
             max="2025-06-19"
-        /></label>
+          />
+        </label>
         <label class="checkbox">
           <input type="checkbox" id="terms" required />
           I accept the Terms & Conditions
         </label>
-        <button type="submit">Submit</button>
+        <button type="submit" id="submitBtn">Submit</button>
       </form>
+    </div>
 
+    <div class="table-container">
       <h2>Submitted Users</h2>
-      <table class="styled-table" id="userTable">
+      <table id="userTable">
         <thead>
           <tr>
             <th>Name</th>
             <th>Email</th>
             <th>Password</th>
-            <th>DOB</th>
-            <th>Accepted?</th>
+            <th>Dob</th>
+            <th>Accepted terms?</th>
           </tr>
         </thead>
-        <tbody></tbody>
+        <tbody id="userTableBody">
+          <!-- Entries will populate here -->
+        </tbody>
       </table>
     </div>
+
     <script src="index.js"></script>
   </body>
 </html>
+
