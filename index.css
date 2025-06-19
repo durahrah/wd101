@@ -1,83 +1,62 @@
-/* [A] Center whole page */
-html,
-body {
-  height: 100%;
-  margin: 0;
-}
-body {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: #f0f2f5;
-}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Registration Assignment</title>
+    <link rel="stylesheet" href="index.css" />
+  </head>
+  <body>
+    <div class="form-container">
+      <h1>User Registration</h1>
+      <form id="userForm">
+        <label>
+          Name:
+          <input type="text" id="name" required />
+        </label>
+        <label>
+          Email:
+          <input type="email" id="email" required />
+        </label>
+        <label>
+          Password:
+          <input type="password" id="password" required />
+        </label>
+        <label>
+          DOB:
+          <input
+            type="date"
+            id="dob"
+            required
+            min="1967-11-09"
+            max="2025-06-19"
+          />
+        </label>
+        <label class="checkbox">
+          <input type="checkbox" id="terms" required />
+          I accept the Terms & Conditions
+        </label>
+        <button type="submit" id="submitBtn">Submit</button>
+      </form>
+    </div>
 
-/* [B] Container for form + table */
-.form-container,
-.table-container {
-  background: #fff;
-  padding: 30px;
-  margin: 10px;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  width: 360px;
-}
+    <div class="table-container">
+      <h2>Submitted Users</h2>
+      <table id="userTable">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Password</th>
+            <th>Dob</th>
+            <th>Accepted terms?</th>
+          </tr>
+        </thead>
+        <tbody id="userTableBody">
+          <!-- Entries will populate here -->
+        </tbody>
+      </table>
+    </div>
 
-/* [C] Form styling */
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-label {
-  font-size: 14px;
-  display: flex;
-  flex-direction: column;
-}
-input[type="text"],
-input[type="email"],
-input[type="password"],
-input[type="date"] {
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-label.checkbox {
-  flex-direction: row;
-  align-items: center;
-  gap: 8px;
-}
-button[type="submit"] {
-  padding: 12px;
-  background: #009879;
-  color: #fff;
-  font-size: 16px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-button[type="submit"]:hover {
-  background: #007f67;
-}
-
-/* [D] Table styling */
-.styled-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 15px;
-}
-.styled-table th,
-.styled-table td {
-  padding: 12px;
-  border: 1px solid #ddd;
-  text-align: left;
-}
-.styled-table thead {
-  background: #009879;
-  color: #fff;
-}
-.styled-table tbody tr:nth-child(even) {
-  background: #f7f7f7;
-}
-.styled-table tbody tr:hover {
-  background: #f1f1f1;
-}
+    <script src="index.js"></script>
+  </body>
+</html>
